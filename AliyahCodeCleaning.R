@@ -1,8 +1,7 @@
 library(tidyverse)
 library(lubridate)
 
-###### 2000 ##############
-#install.packages("haven")
+
 library(haven)
 AliyahData1 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/Aliyah_Tweets - Sheet1.csv")
 AliyahData2 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/Aliyah_Tweets - Sheet2.csv")
@@ -64,20 +63,69 @@ AliyahData <- rbind(AliyahData1, AliyahData2, AliyahData3, AliyahData4, AliyahDa
 NumTweets <- dim(AliyahData)[1] #1614
 NumUniqueTweets <-length(unique(AliyahData$Tweet.Id))
 
-Duplicates <- NumUniqueTweets-NumTweets #242
-
-AliyahData[!duplicated(AliyahData[c('Tweet.Id')]), ]
-dim(AliyahData)
-
-length(unique(AliyahData$Tweet.Id))
-
-AliyahData[!duplicated(AliyahData[c('team')]), ]
-duplicated(AliyahData)
-sum(duplicated(AliyahData$Tweet.Id))
 # remove pure duplicates
-AliyahData$Tweet.Id[duplicated(AliyahData$Tweet.Id)]
+AliyahData = unique(AliyahData)
+AliyahData <- AliyahData[!duplicated(AliyahData$Tweet.Id), ]
 
-AliyahData[!duplicated(AliyahData$Tweet.Id), ]
+# add Coder Initials
+Coder <- rep(c("AMC"), each=dim(AliyahData[1]) )
 
-dim(AliyahData)
-AliyahData[order(-AliyahData$Tweet.Id),]
+Coder <- data.frame(Coder)
+
+AliyahData <-cbind(AliyahData, Coder)
+#AliyahData <- rbind(AliyahData1, AliyahData2, AliyahData3, AliyahData4, AliyahData5, AliyahData6, AliyahData7, AliyahData8, Coder)
+
+
+#### Lucy Codes
+LucyData1 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/LucyTweets - Week1.csv")
+LucyData2 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/LucyTweets - Week2.csv")
+LucyData3 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/LucyTweets - Week3.csv")
+LucyData4 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/LucyTweets - Week4.csv")
+LucyData5 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/LucyTweets - Week5.csv")
+
+
+LucyData1 <- subset(LucyData1, select = c("Tweet.Id", "Datetime", "Text", "Username", "Demand(Y/N)", "Process_Code"))
+LucyData2 <- subset(LucyData2, select = c("Tweet.Id", "Datetime", "Text", "Username", "Demand(Y/N)", "Process_Code"))
+LucyData3 <- subset(LucyData3, select = c("Tweet.Id", "Datetime", "Text", "Username", "Demand(Y/N)", "Process_Code"))
+LucyData4 <- subset(LucyData4, select = c("Tweet.Id", "Datetime", "Text", "Username", "Demand(Y/N)", "Process_Code"))
+LucyData5 <- subset(LucyData5, select = c("Tweet.Id", "Datetime", "Text", "Username", "Demand(Y/N)", "Process_Code"))
+
+LucyData <- rbind(LucyData1, LucyData2, LucyData3, LucyData4, LucyData5)
+
+NumTweets <- dim(LucyData)[1] #1614
+NumUniqueTweets <-length(unique(LucyData$Tweet.Id))
+
+LucyData = unique(LucyData)
+LucyData <- LucyData[!duplicated(LucyData$Tweet.Id), ]
+
+# add Coder Initials
+Coder <- rep(c("LC"), each=dim(LucyData[1]) )
+
+Coder <- data.frame(Coder)
+
+LucyData <-cbind(LucyData, Coder)
+
+
+
+## Arica Coces
+AricaData1 = read_csv("/Users/aricaschuett/Documents/AliyahCodes/AricaWeek1 - Week1.csv")
+
+AricaData1 <- subset(AricaData1, select = c("Tweet.Id", "Datetime", "Text", "Username", "Demand(Y/N)", "Process_Code"))
+AricaData = unique(AricaData1)
+AricaData <- AricaData[!duplicated(AricaData$Tweet.Id), ]
+
+# add Coder Initials
+Coder <- rep(c("ANS"), each=dim(AricaData[1]) )
+Coder <- data.frame(Coder)
+AricaData <-cbind(AricaData, Coder)
+
+
+
+## Complete Tweets
+TweetsFull <- rbind(AliyahData, LucyData, AricaData)
+write.csv(TweetsFull, file = "/Users/aricaschuett/Documents/AliyahCodes/TweetsFull.csv")
+
+TweetsFullNoDupes <- TweetsFull[!duplicated(TweetsFull$Text), ]
+
+write.csv(TweetsFullNoDupes, file = "/Users/aricaschuett/Documents/AliyahCodes/TweetsFullNoDupes.csv")
+
